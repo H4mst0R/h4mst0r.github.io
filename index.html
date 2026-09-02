@@ -1,2926 +1,898 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meine Lebenslinie</title>
-
-    <style>
-        :root {
-            --bg: #181a1f;
-            --card: #22252b;
-            --card-hover: #292d35;
-
-            --text: #e8eaed;
-            --muted: #9aa0aa;
-
-            --line: #555b66;
-            --border: #363a43;
-
-            --accent: #7c8ff5;
-
-            --positive: #4fc982;
-            --positive-bg: #1e3329;
-
-            --negative: #f06b67;
-            --negative-bg: #382324;
-
-            --neutral: #8c929c;
-
-            --input-bg: #191b20;
-
-            --shadow:
-                0 4px 18px rgba(0, 0, 0, 0.30);
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-
-            font-family:
-                Inter,
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
-        }
-
-        header {
-            background: #202329;
-            border-bottom: 1px solid var(--border);
-            padding: 22px 30px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        header .inner {
-            max-width: 1100px;
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .subtitle {
-            color: var(--muted);
-            font-size: 0.9rem;
-            margin-top: 4px;
-        }
-
-        .controls {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 9px 14px;
-
-            font: inherit;
-            cursor: pointer;
-
-            background: #2b2f37;
-            color: var(--text);
-        }
-
-        button:hover {
-            background: #353a44;
-        }
-
-        button.primary {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        button.danger {
-            background: #422628;
-            color: #ff9b97;
-            border-color: #633337;
-        }
-
-        main {
-            max-width: 1100px;
-            margin: 35px auto;
-            padding: 0 25px 80px;
-        }
-
-        .intro {
-            background: var(--card);
-            border-radius: 14px;
-            padding: 22px;
-            box-shadow: var(--shadow);
-            margin-bottom: 35px;
-        }
-
-        .intro h2 {
-            margin-top: 0;
-        }
-
-        .intro p {
-            color: var(--muted);
-            line-height: 1.55;
-        }
-
-        /* =========================
-           SKALA-ERKLÄRUNG
-           ========================= */
-
-        .scale {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .scale-item {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            color: white;
-            font-size: 0.8rem;
-            font-weight: 700;
-
-            transition:
-                transform 0.15s ease,
-                filter 0.15s ease;
-        }
-
-        .scale-item:hover {
-            transform: scale(1.08);
-        }
-
-        /* =========================
-           SKALA NEGATIV
-           ========================= */
-
-        .scale-negative.intensity-1 {
-            background: hsl(0, 45%, 68%);
-        }
-
-        .scale-negative.intensity-2 {
-            background: hsl(0, 60%, 61%);
-        }
-
-        .scale-negative.intensity-3 {
-            background: hsl(0, 72%, 55%);
-        }
-
-        .scale-negative.intensity-4 {
-            background: hsl(0, 80%, 49%);
-        }
-
-        .scale-negative.intensity-5 {
-            background: hsl(0, 85%, 43%);
-        }
-
-        /* =========================
-           NEUTRAL
-           ========================= */
-
-        .scale-neutral {
-            background: #686e78;
-        }
-
-        /* =========================
-           SKALA POSITIV
-           ========================= */
-
-        .scale-positive.intensity-1 {
-            background: hsl(145, 45%, 68%);
-        }
-
-        .scale-positive.intensity-2 {
-            background: hsl(145, 60%, 61%);
-        }
-
-        .scale-positive.intensity-3 {
-            background: hsl(145, 72%, 55%);
-        }
-
-        .scale-positive.intensity-4 {
-            background: hsl(145, 80%, 49%);
-        }
-
-        .scale-positive.intensity-5 {
-            background: hsl(145, 85%, 43%);
-        }
-
-        .scale-label {
-            color: var(--muted);
-            font-size: 0.8rem;
-            margin: 0 8px;
-        }
-
-        /* =========================
-           TIMELINE
-           ========================= */
-
-        .timeline {
-            position: relative;
-            width: 100%;
-            padding: 20px 0;
-        }
-
-        .timeline::before {
-            content: "";
-
-            position: absolute;
-
-            left: 50%;
-            top: 0;
-            bottom: 0;
-
-            width: 4px;
-
-            background: var(--line);
-
-            transform: translateX(-50%);
-
-            border-radius: 4px;
-        }
-
-        .timeline-row {
-            position: relative;
-
-            min-height: 120px;
-
-            display: grid;
-
-            grid-template-columns:
-                1fr 80px 1fr;
-
-            align-items: center;
-        }
-
-        .age {
-            grid-column: 2;
-
-            justify-self: center;
-
-            width: 52px;
-            height: 52px;
-
-            border-radius: 50%;
-
-            background: var(--card);
-
-            border-color: var(--line);
-            border: 3px solid var(--line);
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            font-weight: 700;
-            font-size: 0.95rem;
-
-            z-index: 2;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .age.today {
-            border-color: var(--accent);
-            color: var(--accent);
-
-            box-shadow:
-                0 0 12px rgba(124, 143, 245, 0.25);
-        }
-
-        .age.birth {
-            border-color: #555;
-        }
-
-        .events-left,
-        .events-right {
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 9px;
-        }
-
-        .events-left {
-            grid-column: 1;
-
-            align-items: flex-end;
-
-            padding-right: 25px;
-        }
-
-        .events-right {
-            grid-column: 3;
-
-            align-items: flex-start;
-
-            padding-left: 25px;
-        }
-
-        /* =========================
-           EVENT-KARTE
-           ========================= */
-
-        .event {
-            position: relative;
-
-            width: fit-content;
-            max-width: 100%;
-
-            background: var(--event-bg, #292c31);
-
-            border-left:
-                7px solid var(--event-color, #8c929c);
-
-            /*border-left-width: calc(3px + (var(--intensity-abs) * 1.5px));*/
-
-            border-radius: 9px;
-
-            padding: 12px 14px;
-
-            box-shadow:
-                0 3px 12px rgba(0, 0, 0, 0.20);
-
-            transition:
-                background 0.15s ease,
-                border-color 0.15s ease,
-                transform 0.15s ease;
-        }
-
-        /* =========================
-           POSITION NACH INTENSITÄT
-           
-           1 = 10%
-           2 = 20%
-           3 = 30%
-           4 = 40%
-           5 = 50%
-
-           Je höher die Intensität,
-           desto weiter nach außen.
-           ========================= */
-
-        /* =========================
-        POSITION NACH INTENSITÄT
-        ========================= */
-
-        .event.negative {
-            transform: translateX(calc(var(--intensity-abs) * -21%));
-        }
-
-        .event.positive {
-            transform: translateX(calc(var(--intensity-abs) * 21%));
-        }
-
-        .event.neutral {
-            transform: translateX(0);
-        }
-
-
-        /* =========================
-        HOVER
-        ========================= */
-
-        .event.negative:hover {
-            transform:
-                translateX(calc(var(--intensity-abs) * -21%)) translateY(-2px);
-        }
-
-        .event.positive:hover {
-            transform:
-                translateX(calc(var(--intensity-abs) * 21%)) translateY(-2px);
-        }
-
-        .event.neutral:hover {
-            transform:
-                translateX(0) translateY(-2px);
-        }
-
-
-        /* =========================
-           NEGATIV
-           ========================= */
-
-        .event.negative {
-            --event-color:
-                hsl(0,
-                    calc(45% + (var(--intensity-abs) * 11%)),
-                    calc(68% - (var(--intensity-abs) * 4%)));
-
-            --event-bg:
-                hsl(0,
-                    calc(8% + (var(--intensity-abs) * 9%)),
-                    calc(15% + (var(--intensity-abs) * 2%)));
-
-            --direction: -1;
-        }
-
-        /* =========================
-           POSITIV
-           ========================= */
-
-        .event.positive {
-            --event-color:
-                hsl(145,
-                    calc(45% + (var(--intensity-abs) * 11%)),
-                    calc(68% - (var(--intensity-abs) * 4%)));
-
-            --event-bg:
-                hsl(145,
-                    calc(8% + (var(--intensity-abs) * 9%)),
-                    calc(15% + (var(--intensity-abs) * 2%)));
-
-            --direction: 1;
-        }
-
-        /* =========================
-           NEUTRAL
-           ========================= */
-
-        .event.neutral {
-            --event-color: #8c929c;
-            --event-bg: #292c31;
-        }
-
-        .event-header {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 10px;
-        }
-
-        .event-title {
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .event-note {
-            font-size: 0.9rem;
-            line-height: 1.4;
-
-            color: #b4b9c2;
-        }
-
-        /* =========================
-           INTENSITÄTS-BADGE
-           ========================= */
-
-        .intensity {
-            flex-shrink: 0;
-
-            min-width: 30px;
-            height: 30px;
-
-            padding: 0 7px;
-
-            border-radius: 7px;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            color: white;
-
-            font-weight: 800;
-            font-size: 0.85rem;
-        }
-
-        .intensity.positive {
-            background:
-                hsl(145,
-                    calc(35% + (var(--intensity-abs) * 10%)),
-                    45%);
-        }
-
-        .intensity.negative {
-            background:
-                hsl(0,
-                    calc(35% + (var(--intensity-abs) * 10%)),
-                    45%);
-        }
-
-        .intensity.neutral {
-            background: var(--neutral);
-        }
-
-        .event-actions {
-            margin-top: 9px;
-
-            display: flex;
-            gap: 5px;
-
-            opacity: 0;
-
-            transition:
-                opacity 0.15s;
-        }
-
-        .event:hover .event-actions {
-            opacity: 1;
-        }
-
-        .event-actions button {
-            padding: 4px 8px;
-            font-size: 0.75rem;
-        }
-
-        .drop-target {
-            outline:
-                3px dashed var(--accent);
-
-            outline-offset: 5px;
-        }
-
-        /* =========================
-           INTENSITY SLIDER
-           ========================= */
-
-        .intensity-control {
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-        }
-
-        #intensityValue {
-            width: 48px;
-            height: 40px;
-
-            border-radius: 8px;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            color: white;
-
-            background: var(--neutral);
-
-            font-weight: 800;
-            font-size: 1rem;
-        }
-
-        input[type="range"] {
-            flex: 1;
-
-            accent-color:
-                var(--accent);
-
-            cursor: pointer;
-        }
-
-        .range-labels {
-            display: flex;
-
-            justify-content:
-                space-between;
-
-            color: var(--muted);
-
-            font-size: 0.75rem;
-
-            margin-top: 4px;
-        }
-
-        /* =========================
-           MODAL
-           ========================= */
-
-        dialog {
-            border:
-                1px solid var(--border);
-
-            border-radius: 16px;
-
-            padding: 0;
-
-            width:
-                min(500px,
-                    calc(100% - 30px));
-
-            background: var(--card);
-
-            color: var(--text);
-
-            box-shadow:
-                0 20px 70px rgba(0, 0, 0, 0.6);
-        }
-
-        dialog::backdrop {
-            background:
-                rgba(0, 0, 0, 0.65);
-        }
-
-        .modal {
-            padding: 25px;
-        }
-
-        .modal h2 {
-            margin-top: 0;
-        }
-
-        label {
-            display: block;
-
-            font-size: 0.85rem;
-            font-weight: 600;
-
-            margin: 16px 0 6px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        textarea {
-            width: 100%;
-
-            border:
-                1px solid var(--border);
-
-            border-radius: 8px;
-
-            padding: 10px;
-
-            font: inherit;
-
-            color: var(--text);
-
-            background:
-                var(--input-bg);
-        }
-
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus {
-            outline: none;
-
-            border-color:
-                var(--accent);
-
-            box-shadow:
-                0 0 0 3px rgba(124, 143, 245, 0.15);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 90px;
-        }
-
-        .modal-buttons {
-            margin-top: 20px;
-
-            display: flex;
-
-            justify-content:
-                flex-end;
-
-            gap: 8px;
-        }
-
-        /* =========================
-           MOBILE
-           ========================= */
-
-        /* =========================
-   MOBILE / SCHMALES DISPLAY
-   ========================= */
-
-        @media (max-width: 700px) {
-
-            /* -------------------------
-       HEADER
-       ------------------------- */
-
-            header {
-                padding: 16px 15px;
-            }
-
-            header .inner {
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            h1 {
-                font-size: 1.3rem;
-            }
-
-            .subtitle {
-                font-size: 0.82rem;
-            }
-
-            .controls {
-                width: 100%;
-                gap: 6px;
-            }
-
-            .controls button {
-                flex: 1 1 auto;
-                padding: 8px 9px;
-                font-size: 0.8rem;
-            }
-
-
-            /* -------------------------
-       HAUPTBEREICH
-       ------------------------- */
-
-            main {
-                width: 100%;
-                max-width: none;
-                margin: 20px auto;
-                padding: 0 10px 60px;
-            }
-
-
-            /* -------------------------
-       EINLEITUNG
-       ------------------------- */
-
-            .intro {
-                padding: 16px;
-                margin-bottom: 25px;
-            }
-
-            .intro h2 {
-                font-size: 1.2rem;
-            }
-
-            .intro p {
-                font-size: 0.9rem;
-            }
-
-            .scale {
-                gap: 2px;
-            }
-
-            .scale-item {
-                width: 27px;
-                height: 27px;
-                font-size: 0.68rem;
-            }
-
-            .scale-label {
-                font-size: 0.7rem;
-                margin: 0 3px;
-            }
-
-
-            /* =====================================================
-       TIMELINE
-
-       Drei Spalten:
-
-       links | Zeitstrahl | rechts
-
-       Die mittlere Spalte bleibt immer sichtbar.
-       ===================================================== */
-
-            .timeline {
-                width: 100%;
-                padding: 10px 0;
-                overflow: visible;
-            }
-
-            .timeline::before {
-                left: 50%;
-                width: 3px;
-            }
-
-
-            .timeline-row {
-                width: 100%;
-                min-height: 105px;
-
-                display: grid;
-
-                /*
-           Die äußeren Spalten sind flexibel.
-           Die Mitte bleibt für den Alterskreis reserviert.
-        */
-                grid-template-columns:
-                    minmax(0, 1fr) 48px minmax(0, 1fr);
-
-                align-items: center;
-            }
-
-
-            /* -------------------------
-       ALTERSKREIS
-       ------------------------- */
-
-            .age {
-                grid-column: 2;
-
-                width: 42px;
-                height: 42px;
-
-                font-size: 0.8rem;
-
-                border-width: 2px;
-            }
-
-
-            /* =====================================================
-       LINKER / RECHTER BEREICH
-       ===================================================== */
-
-            .events-left,
-            .events-right {
-                min-width: 0;
-                width: 100%;
-
-                display: flex;
-
-                flex-direction: column;
-
-                gap: 7px;
-
-                padding: 5px 0;
-            }
-
-
-            .events-left {
-                grid-column: 1;
-
-                align-items: flex-end;
-
-                padding-right: 5px;
-            }
-
-
-            .events-right {
-                grid-column: 3;
-
-                align-items: flex-start;
-
-                padding-left: 5px;
-            }
-
-
-            /* =====================================================
-       EVENT-KARTEN
-
-       Wichtig:
-       width: 100% sorgt dafür, dass die Karten
-       innerhalb ihrer jeweiligen Hälfte bleiben.
-       ===================================================== */
-
-            .event {
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
-
-                padding: 9px 8px;
-
-                border-left-width: 4px;
-
-                border-radius: 7px;
-
-                /*
-           Die Desktop-Verschiebung wird auf Mobilgeräten
-           stark reduziert.
-        */
-                transform: translateX(calc(var(--direction) * var(--intensity-abs) * 5%));
-            }
-
-
-            /*
-       Negative Karten nach links,
-       positive Karten nach rechts.
-    */
-
-            .event.negative {
-                transform:
-                    translateX(calc(var(--intensity-abs) * -5%));
-            }
-
-            .event.positive {
-                transform:
-                    translateX(calc(var(--intensity-abs) * 5%));
-            }
-
-            .event.neutral {
-                transform: translateX(0);
-            }
-
-
-            /* -------------------------
-       HOVER
-       ------------------------- */
-
-            .event.negative:hover {
-                transform:
-                    translateX(calc(var(--intensity-abs) * -5%)) translateY(-2px);
-            }
-
-            .event.positive:hover {
-                transform:
-                    translateX(calc(var(--intensity-abs) * 5%)) translateY(-2px);
-            }
-
-            .event.neutral:hover {
-                transform:
-                    translateY(-2px);
-            }
-
-
-            /* -------------------------
-       EVENT-INHALT
-       ------------------------- */
-
-            .event-header {
-                gap: 5px;
-                align-items: flex-start;
-            }
-
-            .event-title {
-                min-width: 0;
-
-                font-size: 0.78rem;
-
-                /*
-           Lange Titel umbrechen,
-           statt die Timeline breiter zu machen.
-        */
-                overflow-wrap: anywhere;
-                word-break: break-word;
-            }
-
-            .event-note {
-                font-size: 0.72rem;
-                line-height: 1.3;
-
-                overflow-wrap: anywhere;
-                word-break: break-word;
-            }
-
-
-            /* -------------------------
-       INTENSITÄTS-BADGE
-       ------------------------- */
-
-            .intensity {
-                min-width: 25px;
-                width: 25px;
-                height: 25px;
-
-                padding: 0;
-
-                border-radius: 5px;
-
-                font-size: 0.7rem;
-
-                flex-shrink: 0;
-            }
-
-
-            /* -------------------------
-       BUTTONS AUF DER KARTE
-       ------------------------- */
-
-            .event-actions {
-                margin-top: 6px;
-
-                opacity: 1;
-
-                gap: 4px;
-            }
-
-            .event-actions button {
-                padding: 3px 6px;
-                font-size: 0.68rem;
-            }
-
-
-            /* =====================================================
-       SEHR SCHMARE HANDYS
-
-       Unter ca. 430px wird die mittlere Spalte
-       noch etwas schmaler.
-       ===================================================== */
-
-            @media (max-width: 430px) {
-
-                main {
-                    padding-left: 5px;
-                    padding-right: 5px;
-                }
-
-                .timeline-row {
-                    grid-template-columns:
-                        minmax(0, 1fr) 42px minmax(0, 1fr);
-                }
-
-                .age {
-                    width: 38px;
-                    height: 38px;
-
-                    font-size: 0.72rem;
-                }
-
-                .events-left {
-                    padding-right: 3px;
-                }
-
-                .events-right {
-                    padding-left: 3px;
-                }
-
-                .event {
-                    padding: 7px 6px;
-
-                    border-left-width: 3px;
-                }
-
-                .event-title {
-                    font-size: 0.72rem;
-                }
-
-                .event-note {
-                    font-size: 0.67rem;
-                }
-
-                .intensity {
-                    min-width: 22px;
-                    width: 22px;
-                    height: 22px;
-
-                    font-size: 0.62rem;
-                }
-            }
-        }
-
-
-        /* =========================
-           SONSTIGES
-           ========================= */
-
-        #eventAge {
-            color:
-                var(--text) !important;
-
-            background:
-                var(--input-bg) !important;
-
-            border-color:
-                var(--border) !important;
-        }
-
-        /* =========================
-           INTENSITÄT – EVENTS
-           ========================= */
-
-        .event.negative.intensity-5 {
-            background: #5a1719;
-            border-left-color: #ff4d4f;
-        }
-
-        .event.negative.intensity-4 {
-            background: #4b1b1d;
-            border-left-color: #ef5557;
-        }
-
-        .event.negative.intensity-3 {
-            background: #3d2022;
-            border-left-color: #df5d5f;
-        }
-
-        .event.negative.intensity-2 {
-            background: #322426;
-            border-left-color: #cf6668;
-        }
-
-        .event.negative.intensity-1 {
-            background: #292729;
-            border-left-color: #bf7072;
-        }
-
-        .event.positive.intensity-1 {
-            background: #252c28;
-            border-left-color: #78bd96;
-        }
-
-        .event.positive.intensity-2 {
-            background: #24332a;
-            border-left-color: #65c48a;
-        }
-
-        .event.positive.intensity-3 {
-            background: #223b2c;
-            border-left-color: #55ca82;
-        }
-
-        .event.positive.intensity-4 {
-            background: #20482f;
-            border-left-color: #49d47d;
-        }
-
-        .event.positive.intensity-5 {
-            background: #1b5934;
-            border-left-color: #42e27b;
-        }
-
-        .event.neutral {
-            background: #292c31;
-            border-left-color: #8c929c;
-        }
-
-        /* =========================
-        ANLEITUNG
-        ========================= */
-
-        .guide-container {
-            position: relative;
-            margin-bottom: 35px;
-        }
-
-        .guide-button {
-            display: block;
-            margin: 0 auto 10px;
-        }
-
-        .guide-container .intro {
-            margin-bottom: 0;
-
-            /* Standardmäßig versteckt */
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-
-            max-height: 0;
-            overflow: hidden;
-
-            padding-top: 0;
-            padding-bottom: 0;
-
-            transition:
-                opacity 0.2s ease,
-                max-height 0.25s ease,
-                padding 0.25s ease,
-                visibility 0.2s ease;
-        }
-
-
-        /* Anleitung sichtbar,
-        solange Maus über Container/Anleitung */
-
-        .guide-container:hover .intro {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-
-            max-height: 500px;
-
-            padding-top: 22px;
-            padding-bottom: 22px;
-        }
-
-        /* =========================================================
-   DRUCKVERSION
-   MUSS GANZ AM ENDE DES STYLE-BLOCKS STEHEN!
-   ========================================================= */
-
-        @media print {
-
-            /* Farben auch auf dem Drucker erhalten */
-            *,
-            *::before,
-            *::after {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-
-            /* =========================
-       SEITE
-       ========================= */
-
-            html,
-            body {
-                margin: 0 !important;
-                padding: 0 !important;
-
-                background: white !important;
-                color: #111 !important;
-            }
-
-            body {
-                font-size: 12px;
-            }
-
-
-            /* =========================
-       NICHT DRUCKEN
-       ========================= */
-
-            header,
-            .guide-container,
-            .intro,
-            .event-actions {
-                display: none !important;
-            }
-
-
-            main {
-                width: 100% !important;
-                max-width: none !important;
-
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-
-            /* =========================
-       TIMELINE
-       ========================= */
-
-            .timeline {
-                position: relative !important;
-
-                width: 100% !important;
-
-                margin: 0 !important;
-                padding: 10px 0 !important;
-            }
-
-
-            /*
-       GANZ WICHTIG:
-
-       Die mobile Regel
-       ".events-left { display:none }"
-       wird hier explizit überschrieben.
-    */
-
-            .timeline-row {
-                position: relative !important;
-
-                width: 100% !important;
-
-                min-height: 90px !important;
-
-                display: grid !important;
-
-                grid-template-columns:
-                    minmax(0, 1fr) 70px minmax(0, 1fr) !important;
-
-                align-items: center !important;
-
-                break-inside: avoid !important;
-                page-break-inside: avoid !important;
-            }
-
-
-            /* =========================
-       ZEITLINIE
-       ========================= */
-
-            .timeline::before {
-                content: "" !important;
-
-                position: absolute !important;
-
-                left: 50% !important;
-
-                top: 0 !important;
-                bottom: 0 !important;
-
-                width: 3px !important;
-
-                background: #555 !important;
-
-                transform:
-                    translateX(-50%) !important;
-
-                display: block !important;
-            }
-
-
-            /* =========================
-       ALTERSKREISE
-       ========================= */
-
-            .age {
-                grid-column: 2 !important;
-
-                justify-self: center !important;
-
-                width: 46px !important;
-                height: 46px !important;
-
-                background: white !important;
-
-                color: #222 !important;
-
-                border: 3px solid #666 !important;
-
-                box-shadow: none !important;
-
-                z-index: 2 !important;
-            }
-
-            .age.today {
-                border-color: #5369d5 !important;
-                color: #5369d5 !important;
-
-                box-shadow: none !important;
-            }
-
-
-            /* =========================
-       LINKE SEITE
-       ========================= */
-
-            .events-left {
-                display: flex !important;
-
-                grid-column: 1 !important;
-
-                align-items: flex-end !important;
-
-                justify-content: center !important;
-
-                flex-direction: column !important;
-
-                gap: 9px !important;
-
-                padding-right: 18px !important;
-
-                width: 100% !important;
-
-                min-width: 0 !important;
-            }
-
-
-            /* =========================
-       RECHTE SEITE
-       ========================= */
-
-            .events-right {
-                display: flex !important;
-
-                grid-column: 3 !important;
-
-                align-items: flex-start !important;
-
-                justify-content: center !important;
-
-                flex-direction: column !important;
-
-                gap: 9px !important;
-
-                padding-left: 18px !important;
-
-                width: 100% !important;
-
-                min-width: 0 !important;
-            }
-
-
-            /* =========================
-       EVENT-KARTEN
-       ========================= */
-
-            .event {
-                position: relative !important;
-
-                width: auto !important;
-                max-width: 100% !important;
-
-                min-width: 0 !important;
-
-                transform: none !important;
-
-                margin: 0 !important;
-
-                box-shadow: none !important;
-
-                color: #111 !important;
-
-                border: 1px solid #999 !important;
-
-                border-left-width:
-                    calc(3px + (var(--intensity-abs) * 1px)) !important;
-
-                break-inside: avoid !important;
-                page-break-inside: avoid !important;
-            }
-
-
-            /* =========================
-       NEGATIV
-       ========================= */
-
-            .event.negative {
-                background: #fff0f0 !important;
-                border-left-color: #d52f35 !important;
-            }
-
-            .event.negative.intensity-1 {
-                background: #fff8f8 !important;
-                border-left-color: #e39a9d !important;
-            }
-
-            .event.negative.intensity-2 {
-                background: #fff1f1 !important;
-                border-left-color: #df777b !important;
-            }
-
-            .event.negative.intensity-3 {
-                background: #ffe8e8 !important;
-                border-left-color: #db595e !important;
-            }
-
-            .event.negative.intensity-4 {
-                background: #ffdddd !important;
-                border-left-color: #d83e44 !important;
-            }
-
-            .event.negative.intensity-5 {
-                background: #ffd2d3 !important;
-                border-left-color: #c91f27 !important;
-            }
-
-
-            /* =========================
-       POSITIV
-       ========================= */
-
-            .event.positive {
-                background: #eefaf2 !important;
-                border-left-color: #35a765 !important;
-            }
-
-            .event.positive.intensity-1 {
-                background: #f7fcf8 !important;
-                border-left-color: #8cc6a3 !important;
-            }
-
-            .event.positive.intensity-2 {
-                background: #effaf3 !important;
-                border-left-color: #70bb8e !important;
-            }
-
-            .event.positive.intensity-3 {
-                background: #e8f8ed !important;
-                border-left-color: #54b97a !important;
-            }
-
-            .event.positive.intensity-4 {
-                background: #dff5e7 !important;
-                border-left-color: #39ad68 !important;
-            }
-
-            .event.positive.intensity-5 {
-                background: #d5f2df !important;
-                border-left-color: #15934c !important;
-            }
-
-
-            /* =========================
-       NEUTRAL
-       ========================= */
-
-            .event.neutral {
-                background: #f2f2f2 !important;
-                border-left-color: #777 !important;
-            }
-
-
-            /* =========================
-       EVENT-TEXT
-       ========================= */
-
-            .event-title {
-                color: #111 !important;
-            }
-
-            .event-note {
-                color: #444 !important;
-            }
-
-
-            /* =========================
-       INTENSITÄTS-BADGE
-       ========================= */
-
-            .intensity {
-                color: white !important;
-
-                print-color-adjust: exact !important;
-                -webkit-print-color-adjust: exact !important;
-            }
-
-            .intensity.negative {
-                background: #c92f35 !important;
-            }
-
-            .intensity.positive {
-                background: #15934c !important;
-            }
-
-            .intensity.neutral {
-                background: #777 !important;
-            }
-
-
-            /* =========================
-       HOVER KOMPLETT ABSCHALTEN
-       ========================= */
-
-            .event:hover,
-            .event.negative:hover,
-            .event.positive:hover,
-            .event.neutral:hover {
-                transform: none !important;
-            }
-
-
-            /* =========================
-       A4
-       ========================= */
-
-            @page {
-                size: A4 portrait;
-                margin: 10mm;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lebenslinie</title>
+<style>
+  :root{
+    --bg: #1D1D20;
+    --bg-header: #19191B;
+    --panel: #27272B;
+    --panel-hover: #303035;
+    --ink: #E6E6E9;
+    --ink-dim: #9B9BA3;
+    --ink-faint: #6C6C74;
+    --border: #38383D;
+    --border-strong: #48484F;
+    --line: #414146;
+    --focus: #9A9AA2;
+    --ink-hover: #FFFFFF;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{ color-scheme: dark; }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size:14px;
+    line-height:1.5;
+    padding-bottom:80px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{ margin:0; font-weight:600; }
+
+  .icon{ width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; display:block; }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky; top:0; z-index:20;
+    background:var(--bg-header);
+    padding:18px 24px;
+    border-bottom:1px solid var(--border);
+  }
+  .header-inner{
+    max-width:1100px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  .title-block h1{ font-size:18px; font-weight:600; color:var(--ink); }
+  .title-block p{ margin:2px 0 0; color:var(--ink-dim); font-size:12.5px; }
+
+  .header-controls{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .field{ display:flex; align-items:center; gap:8px; }
+  .field label{ font-size:12.5px; color:var(--ink-dim); white-space:nowrap; }
+  .field input[type=date]{
+    background:var(--panel); border:1px solid var(--border); color:var(--ink);
+    padding:6px 8px; border-radius:5px; font-family:inherit; font-size:13px;
+  }
+  .age-readout{ font-size:13px; color:var(--ink-dim); white-space:nowrap; }
+  .age-readout strong{ color:var(--ink); font-weight:600; }
+
+  .icon-btn{
+    width:32px; height:32px; border-radius:6px; border:1px solid var(--border);
+    background:var(--panel); color:var(--ink-dim); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .12s, color .12s, border-color .12s;
+  }
+  .icon-btn:hover{ background:var(--panel-hover); color:var(--ink); border-color:var(--border-strong); }
+  .icon-btn.primary{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  .icon-btn.primary:hover{ background:var(--ink-hover); border-color:var(--ink-hover); }
+  .icon-btn.danger{ color:#C77E76; }
+  .icon-btn.danger:hover{ background:rgba(179,38,30,0.16); color:#E2948B; border-color:#8C4038; }
+
+  .icon-divider{ width:1px; height:20px; background:var(--border); }
+
+  #importFile{ display:none; }
+
+  /* ---------- Timeline ---------- */
+  main{ max-width:1100px; margin:0 auto; padding:16px 24px 0; }
+
+  .empty-state{
+    margin-top:60px; text-align:center; color:var(--ink-dim);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .empty-state h2{ color:var(--ink); font-size:16px; font-weight:600; }
+  .empty-state p{ font-size:13px; margin:0; }
+
+  .timeline{ position:relative; }
+  .timeline::before{
+    content:'';
+    position:absolute; top:0; bottom:0; left:50%;
+    transform:translateX(-50%);
+    width:1px;
+    background:linear-gradient(180deg, transparent, var(--line) 3%, var(--line) 97%, transparent);
+  }
+
+  .year-row{ display:flex; align-items:flex-start; gap:16px; padding:8px 0; }
+  .col-side{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:6px; }
+  .col-left{ align-items:flex-end; }
+  .col-right{ align-items:flex-start; }
+
+  .col-center{ flex:0 0 96px; width:96px; display:flex; justify-content:center; position:relative; z-index:2; }
+
+  .lane{ flex:0 0 auto; position:relative; align-self:stretch; }
+
+  .span-bar{
+    position:absolute; z-index:1;
+    border-radius:6px; cursor:pointer;
+    box-shadow:0 0 0 1px rgba(0,0,0,0.1) inset;
+    transition:filter .12s, z-index .01s;
+  }
+  .span-bar:hover{ filter:brightness(0.95); z-index:40; }
+  .span-bar-label{
+    width:100%; height:100%; box-sizing:border-box;
+    display:flex; align-items:center; justify-content:center;
+    writing-mode:vertical-rl; text-orientation:mixed;
+    font-size:10.5px; font-weight:600; line-height:1.2;
+    padding:8px 0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  .span-bar-popover{
+    position:absolute; top:50%; width:220px; max-width:60vw;
+    box-sizing:border-box;
+    writing-mode:horizontal-tb; text-orientation:initial;
+    border-radius:8px; padding:10px 12px;
+    font-size:12px; line-height:1.4;
+    box-shadow:0 10px 28px rgba(0,0,0,0.4);
+    opacity:0; pointer-events:none;
+    transform:translateY(-50%) scale(0.96);
+    transform-origin:center;
+    transition:opacity .12s, transform .12s;
+    z-index:60;
+  }
+  .span-bar:hover .span-bar-popover{ opacity:1; pointer-events:auto; transform:translateY(-50%) scale(1); }
+  .span-bar-left .span-bar-popover{ right:100%; margin-right:8px; }
+  .span-bar-right .span-bar-popover{ left:100%; margin-left:8px; }
+  .span-bar-popover .popover-title{ margin:0 0 4px; font-weight:700; }
+  .span-bar-popover .popover-text{ margin:0; opacity:0.9; white-space:pre-wrap; }
+  .span-bar-popover .popover-range{ margin:6px 0 0; font-size:10.5px; opacity:0.7; }
+
+  .year-marker{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    width:42px; height:42px; border-radius:50%;
+    background:var(--bg); border:1px solid var(--border-strong);
+    color:var(--ink-dim); cursor:pointer; user-select:none;
+    transition:border-color .12s, color .12s, background .12s;
+  }
+  .year-marker:hover{ border-color:var(--ink); color:var(--ink); background:var(--panel); }
+  .year-marker .age{ font-size:13px; font-weight:600; line-height:1; color:inherit; }
+  .year-marker .cal{ font-size:8.5px; margin-top:1px; color:var(--ink-faint); }
+  .year-marker.has-entries{ border-color:var(--ink-dim); }
+
+  .entry-card{
+    max-width:320px; width:100%;
+    border-radius:6px; padding:8px 10px;
+    cursor:pointer; position:relative;
+    border:1px solid rgba(0,0,0,0.08);
+    transition:filter .12s;
+  }
+  .entry-card:hover{ filter:brightness(0.97); }
+  .entry-card .entry-title{
+    font-weight:600; font-size:13px; margin:0 0 2px; padding-right:20px;
+  }
+  .entry-card .entry-text{
+    font-size:12px; opacity:0.85; margin:0;
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .entry-card .entry-delete{
+    position:absolute; top:6px; right:6px;
+    width:20px; height:20px; border-radius:4px; border:none;
+    background:rgba(0,0,0,0.08); color:inherit; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0.6;
+  }
+  .entry-card .entry-delete:hover{ opacity:1; background:rgba(0,0,0,0.16); }
+  .entry-card .entry-delete .icon{ width:12px; height:12px; }
+  .col-left .entry-card{ text-align:right; }
+  .col-left .entry-card .entry-delete{ left:6px; right:auto; }
+  .col-left .entry-card .entry-title{ padding-right:0; padding-left:20px; }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.55);
+    display:flex; align-items:center; justify-content:center;
+    z-index:100; padding:20px;
+  }
+  .modal-overlay.hidden{ display:none; }
+  .modal{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px;
+    width:100%; max-width:420px; padding:22px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.5);
+  }
+  .modal h2{ font-size:15px; font-weight:600; margin-bottom:16px; }
+  .modal .field-block{ margin-bottom:13px; width:100%; }
+  .modal label{ font-size:12px; color:var(--ink-dim); margin-bottom:5px; display:block; }
+  .modal input[type=text], .modal select, .modal textarea{
+    width:100%; background:var(--bg); border:1px solid var(--border);
+    color:var(--ink); padding:8px 9px; border-radius:5px; font-family:inherit; font-size:13.5px;
+  }
+  .modal input[type=text]:focus, .modal select:focus, .modal textarea:focus{
+    outline:none; border-color:var(--focus);
+  }
+  .modal textarea{ resize:vertical; min-height:70px; }
+
+  .side-toggle{ display:flex; gap:8px; }
+  .side-toggle button{
+    flex:1; padding:8px; border-radius:5px; border:1px solid var(--border);
+    background:var(--bg); color:var(--ink-dim); cursor:pointer; font-size:12.5px; font-weight:600;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .side-toggle button .icon{ width:13px; height:13px; }
+  .side-toggle button.active[data-side="neg"]{ background:#B3261E; border-color:#B3261E; color:#FBF6EC; }
+  .side-toggle button.active[data-side="pos"]{ background:#2E7D32; border-color:#2E7D32; color:#FBF6EC; }
+
+  .intensity-row{ display:flex; gap:6px; }
+  .intensity-row button{
+    flex:1; height:32px; border-radius:5px; border:1px solid var(--border);
+    cursor:pointer; color:var(--ink-dim); background:var(--bg); font-weight:600; font-size:12.5px;
+  }
+  .intensity-row button.selected{ outline:2px solid var(--ink); outline-offset:1px; }
+
+  .modal-actions{ display:flex; justify-content:space-between; align-items:center; margin-top:18px; gap:10px; }
+  .modal-actions .right-actions{ display:flex; gap:8px; }
+  .text-btn{
+    font-family:inherit; width:36px; height:36px; padding:0;
+    border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--ink);
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .text-btn:hover{ background:var(--panel-hover); }
+  .text-btn.primary{ background:var(--ink); border-color:var(--ink); color:var(--bg); }
+  .text-btn.primary:hover{ background:var(--ink-hover); border-color:var(--ink-hover); }
+  .text-btn.danger{ background:transparent; border-color:#D9B4B0; color:#B3261E; }
+  .text-btn.danger:hover{ background:rgba(179,38,30,0.06); }
+
+  .confirm-modal .modal{ max-width:340px; text-align:center; }
+  .confirm-modal p{ color:var(--ink-dim); margin:0 0 18px; font-size:13px; }
+  .confirm-actions{ display:flex; gap:10px; justify-content:center; }
+
+  @media (max-width: 680px){
+    header{ padding:14px 16px; }
+    main{ padding:12px 12px 0; }
+    .year-row{ gap:8px; }
+    .col-center{ flex-basis:64px; width:64px; }
+    .year-marker{ width:36px; height:36px; }
+    .year-marker .age{ font-size:11.5px; }
+    .entry-card{ max-width:none; }
+    .header-controls{ width:100%; justify-content:space-between; }
+    .span-bar{ font-size:9px; }
+  }
+
+  /* ---------- Print ---------- */
+  .print-only{ display:none; }
+
+  @media print{
+    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; }
+
+    body{ background:#fff !important; color:#111 !important; padding-bottom:0; }
+
+    header{ position:static; background:#fff !important; border-bottom:1px solid #ccc; padding:0 0 12px; }
+    .header-controls, .empty-state{ display:none !important; }
+    .title-block p{ color:#555 !important; }
+
+    .print-only{ display:block; font-size:12px; color:#555; margin:6px 0 0; }
+
+    main{ padding:16px 0 0; max-width:none; }
+
+    .timeline::before{ background:#bbb !important; }
+
+    .year-marker{ background:#fff !important; border-color:#999 !important; color:#333 !important; }
+    .year-marker .cal{ color:#888 !important; }
+
+    .entry-card{ border:1px solid rgba(0,0,0,0.15) !important; box-shadow:none !important; break-inside:avoid; }
+    .entry-card .entry-delete{ display:none !important; }
+    .span-bar{ box-shadow:0 0 0 1px rgba(0,0,0,0.2) inset !important; }
+    .span-bar-popover{ display:none !important; }
+
+    .year-row{ break-inside:avoid; }
+
+    .modal-overlay{ display:none !important; }
+  }
+</style>
 </head>
-
 <body>
 
-    <header>
-
-        <div class="inner">
-
-            <div>
-                <h1>Hausaufgabe</h1>
-
-                <div class="subtitle">
-                    Positives und Negatives im Verlauf meines Lebens
-                </div>
-            </div>
-
-            <div class="controls">
-
-                <button class="primary" onclick="openAddModal()">
-                    + Ereignis
-                </button>
-
-                <button onclick="exportData()">
-                    💾 Exportieren
-                </button>
-
-                <button onclick="document.getElementById('importFile').click()">
-                    📂 Importieren
-                </button>
-
-                <input id="importFile" type="file" accept=".json,application/json" style="display:none"
-                    onchange="importData(event)">
-
-                <button onclick="window.print()">
-                    🖨 Drucken
-                </button>
-
-                <button class="danger" onclick="clearAll()">
-                    🗑️ Alles löschen
-                </button>
-
-            </div>
-
-        </div>
-
-    </header>
-
-
-    <main>
-
-        <div class="guide-container">
-
-            <button type="button" class="guide-button">
-                ℹ️ So geht's
-            </button>
-
-            <section class="intro">
-
-                <h2>Lebenslinie</h2>
-
-                <p>
-                    Wichtige Ereignisse des Lebens eintragen!<br>
-                    Die Bewertung reicht von <strong>−5</strong>
-                    (sehr negativ) bis <strong>+5</strong>
-                    (sehr positiv).
-                </p>
-
-                <div class="scale">
-
-                    <span class="scale-label">
-                        sehr negativ
-                    </span>
-
-                    <span class="scale-item scale-negative intensity-5">−5</span>
-                    <span class="scale-item scale-negative intensity-4">−4</span>
-                    <span class="scale-item scale-negative intensity-3">−3</span>
-                    <span class="scale-item scale-negative intensity-2">−2</span>
-                    <span class="scale-item scale-negative intensity-1">−1</span>
-
-                    <span class="scale-item scale-neutral">0</span>
-
-                    <span class="scale-item scale-positive intensity-1">+1</span>
-                    <span class="scale-item scale-positive intensity-2">+2</span>
-                    <span class="scale-item scale-positive intensity-3">+3</span>
-                    <span class="scale-item scale-positive intensity-4">+4</span>
-                    <span class="scale-item scale-positive intensity-5">+5</span>
-
-                    <span class="scale-label">
-                        sehr positiv
-                    </span>
-
-                </div>
-
-            </section>
-
-        </div>
-
-        <section id="timeline" class="timeline">
-        </section>
-
-    </main>
-
-
-    <!-- =========================
-             MODAL
-             ========================= -->
-
-    <dialog id="eventDialog">
-
-        <form method="dialog" class="modal" onsubmit="saveEvent(event)">
-
-            <h2 id="modalTitle">
-                Neues Ereignis
-            </h2>
-
-            <input type="hidden" id="eventId">
-
-
-            <label for="eventAge">
-                Alter
-            </label>
-
-            <input id="eventAge" type="number" min="0" max="120" step="1" required>
-
-
-            <label>
-                Bewertung
-            </label>
-
-            <div class="intensity-control">
-
-                <input id="eventIntensity" type="range" min="-5" max="5" step="1" value="0"
-                    oninput="updateIntensityPreview()">
-
-                <div id="intensityValue">
-                    0
-                </div>
-
-            </div>
-
-            <div class="range-labels">
-
-                <span>
-                    −5 sehr negativ
-                </span>
-
-                <span>
-                    0 neutral
-                </span>
-
-                <span>
-                    +5 sehr positiv
-                </span>
-
-            </div>
-
-
-            <label for="eventTitle">
-                Kurze Bezeichnung
-            </label>
-
-            <input id="eventTitle" type="text" maxlength="100" placeholder="z. B. Schulabschluss" required>
-
-
-            <label for="eventNote">
-                Anmerkung
-            </label>
-
-            <textarea id="eventNote" maxlength="500"
-                placeholder="Was ist passiert? Warum war dieser Zeitpunkt wichtig?"></textarea>
-
-
-            <div class="modal-buttons">
-
-                <button type="button" onclick="closeModal()">
-                    Abbrechen
-                </button>
-
-                <button class="primary" type="submit">
-                    Speichern
-                </button>
-
-            </div>
-
-        </form>
-
-    </dialog>
-
-
-    <script>
-
-        /* ==========================================
-           KONFIGURATION
-           ========================================== */
-
-        const BIRTH_DATE =
-            "1983-08-19";
-
-        const STORAGE_KEY =
-            "meine-lebenslinie-v2";
-
-
-        /* ==========================================
-           DATEN
-           ========================================== */
-
-        let events =
-            loadEvents();
-
-        let draggedEventId =
-            null;
-
-
-        /* ==========================================
-           AKTUELLES ALTER
-           ========================================== */
-
-        function getCurrentAge() {
-
-            const birth =
-                new Date(BIRTH_DATE);
-
-            const today =
-                new Date();
-
-            let age =
-                today.getFullYear() -
-                birth.getFullYear();
-
-            const monthDifference =
-                today.getMonth() -
-                birth.getMonth();
-
-            if (
-                monthDifference < 0 ||
-                (
-                    monthDifference === 0 &&
-                    today.getDate() < birth.getDate()
-                )
-            ) {
-                age--;
-            }
-
-            return age;
+<header>
+  <div class="header-inner">
+    <div class="title-block">
+      <h1>Lebenslinie</h1>
+      <p>Zeitstrahl prägender Momente</p>
+    </div>
+    <div class="header-controls">
+      <div class="field">
+        <label for="birthdate">Geburtsdatum</label>
+        <input type="date" id="birthdate">
+      </div>
+      <div class="age-readout" id="ageReadout">–</div>
+      <div class="icon-divider"></div>
+      <button class="icon-btn primary" id="addBtn" title="Eintrag hinzufügen">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button class="icon-btn" id="exportBtn" title="Als .json exportieren">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="icon-btn" id="importBtn" title="Aus .json importieren">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <button class="icon-btn" id="printBtn" title="Drucken">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      </button>
+      <div class="icon-divider"></div>
+      <button class="icon-btn danger" id="clearAllBtn" title="Alle Einträge löschen">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+      </button>
+      <input type="file" id="importFile" accept="application/json">
+    </div>
+  </div>
+  <p class="print-only" id="printMeta"></p>
+</header>
+
+<main>
+  <div id="emptyState" class="empty-state" style="display:none;">
+    <h2>Kein Geburtsdatum gesetzt</h2>
+    <p>Geburtsdatum wählen, um zu starten.</p>
+  </div>
+  <div class="timeline" id="timeline"></div>
+</main>
+
+<!-- Entry Form Modal -->
+<div class="modal-overlay hidden" id="entryModalOverlay">
+  <div class="modal">
+    <h2 id="entryModalTitle">Eintrag hinzufügen</h2>
+    <div class="field-block">
+      <label for="entryYear">Von</label>
+      <select id="entryYear"></select>
+    </div>
+    <div class="field-block">
+      <label for="entryYearEnd">Bis</label>
+      <select id="entryYearEnd"></select>
+    </div>
+    <div class="field-block">
+      <label for="entryTitle">Titel</label>
+      <input type="text" id="entryTitle" placeholder="Was?" maxlength="80">
+    </div>
+    <div class="field-block">
+      <label for="entryText">Beschreibung</label>
+      <textarea id="entryText" placeholder="Wieso? Weshalb? Warum?"></textarea>
+    </div>
+    <div class="field-block">
+      <label>Gewichtung</label>
+      <div class="side-toggle" id="sideToggle">
+        <button type="button" data-side="neg">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          negativ
+        </button>
+        <button type="button" data-side="pos">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          positiv
+        </button>
+      </div>
+    </div>
+    <div class="field-block">
+      <label>Stärke</label>
+      <div class="intensity-row" id="intensityRow"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="text-btn danger" id="deleteFromFormBtn" title="Löschen" style="display:none;">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+      </button>
+      <div class="right-actions">
+        <button class="text-btn" id="cancelEntryBtn" title="Abbrechen">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <button class="text-btn primary" id="saveEntryBtn" title="Speichern">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay hidden confirm-modal" id="confirmModalOverlay">
+  <div class="modal">
+    <h2 id="confirmTitle">Eintrag wirklich löschen?</h2>
+    <p id="confirmText">Dieser Schritt lässt sich nicht rückgängig machen.</p>
+    <div class="confirm-actions">
+      <button class="text-btn" id="confirmCancelBtn" title="Abbrechen">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <button class="text-btn danger" id="confirmOkBtn" title="Löschen bestätigen">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const LS_BIRTHDATE = 'lebenslinie_birthdate';
+  const LS_ENTRIES = 'lebenslinie_entries';
+
+  let birthdate = localStorage.getItem(LS_BIRTHDATE) || '';
+  let entries = [];
+  try { entries = JSON.parse(localStorage.getItem(LS_ENTRIES)) || []; } catch(e){ entries = []; }
+
+  let formState = { mode:'add', id:null, side:'pos', intensity:3, year:0 };
+
+  const $ = (sel) => document.querySelector(sel);
+  const birthdateInput = $('#birthdate');
+  const ageReadout = $('#ageReadout');
+  const timelineEl = $('#timeline');
+  const emptyState = $('#emptyState');
+  const printMeta = $('#printMeta');
+
+  birthdateInput.value = birthdate;
+
+  function saveEntries(){ localStorage.setItem(LS_ENTRIES, JSON.stringify(entries)); }
+  function saveBirthdate(){ localStorage.setItem(LS_BIRTHDATE, birthdate); }
+
+  function uid(){ return 'e_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
+
+  function completedYears(birth){
+    const b = new Date(birth + 'T00:00:00');
+    const now = new Date();
+    let years = now.getFullYear() - b.getFullYear();
+    const hadBirthdayThisYear =
+      (now.getMonth() > b.getMonth()) ||
+      (now.getMonth() === b.getMonth() && now.getDate() >= b.getDate());
+    if (!hadBirthdayThisYear) years -= 1;
+    return Math.max(0, years);
+  }
+
+  function weightColor(weight){
+    const abs = Math.abs(weight);
+    const negStops = ['#F7DAD6','#EFBBB4','#E2948B','#CD6257','#B3261E'];
+    const posStops = ['#DCEBD8','#BEDCB6','#98C88E','#69AC5C','#2E7D32'];
+    const stops = weight < 0 ? negStops : posStops;
+    return stops[Math.min(abs,5) - 1];
+  }
+  function weightTextColor(weight){
+    return Math.abs(weight) >= 4 ? '#FBF6EC' : '#241B10';
+  }
+
+  // ---------- Rendering ----------
+
+  function assignTracks(list){
+    const sorted = list.slice().sort((a,b) => a.year - b.year);
+    const trackEnds = [];
+    const trackOf = {};
+    sorted.forEach(e => {
+      let track = trackEnds.findIndex(end => end < e.year);
+      if (track === -1){ track = trackEnds.length; trackEnds.push(e.yearEnd); }
+      else { trackEnds[track] = e.yearEnd; }
+      trackOf[e.id] = track;
+    });
+    return { trackOf, trackCount: trackEnds.length };
+  }
+
+  const BAR_WIDTH = 12;
+  const BAR_GAP = 4;
+
+  function render(){
+    if (!birthdate){
+      emptyState.style.display = 'flex';
+      timelineEl.style.display = 'none';
+      ageReadout.textContent = '–';
+      printMeta.textContent = '';
+      return;
+    }
+    emptyState.style.display = 'none';
+    timelineEl.style.display = 'block';
+
+    const b = new Date(birthdate + 'T00:00:00');
+    const birthYear = b.getFullYear();
+    const maxAge = completedYears(birthdate);
+    ageReadout.innerHTML = '<strong>' + maxAge + '</strong> vollendete Lebensjahre';
+    const bdFormatted = b.toLocaleDateString('de-DE');
+    printMeta.textContent = 'Geburtsdatum: ' + bdFormatted + ' · ' + maxAge + ' vollendete Lebensjahre';
+
+    timelineEl.innerHTML = '';
+
+    const normalized = entries.map(e => ({ ...e, yearEnd: (e.yearEnd != null ? e.yearEnd : e.year) }));
+    const singleEntries = normalized.filter(e => e.yearEnd === e.year);
+    const multiEntries = normalized.filter(e => e.yearEnd !== e.year);
+    const multiLeft = multiEntries.filter(e => e.weight < 0);
+    const multiRight = multiEntries.filter(e => e.weight > 0);
+    const tracksLeft = assignTracks(multiLeft);
+    const tracksRight = assignTracks(multiRight);
+    const laneWidth = (trackCount) => trackCount ? 8 + trackCount * (BAR_WIDTH + BAR_GAP) : 8;
+    const laneWidthLeft = laneWidth(tracksLeft.trackCount);
+    const laneWidthRight = laneWidth(tracksRight.trackCount);
+
+    const coveredAges = new Set();
+    multiEntries.forEach(e => { for (let a = e.year; a <= e.yearEnd; a++) coveredAges.add(a); });
+
+    const laneLeftEls = {};
+    const laneRightEls = {};
+
+    for (let age = 0; age <= maxAge; age++){
+      const row = document.createElement('div');
+      row.className = 'year-row';
+
+      const colLeft = document.createElement('div');
+      colLeft.className = 'col-side col-left';
+      const colRight = document.createElement('div');
+      colRight.className = 'col-side col-right';
+      const colCenter = document.createElement('div');
+      colCenter.className = 'col-center';
+      const laneLeft = document.createElement('div');
+      laneLeft.className = 'lane';
+      laneLeft.style.width = laneWidthLeft + 'px';
+      const laneRight = document.createElement('div');
+      laneRight.className = 'lane';
+      laneRight.style.width = laneWidthRight + 'px';
+
+      const yearEntries = singleEntries.filter(e => e.year === age);
+      yearEntries.filter(e => e.weight < 0).sort((a,b2)=>a.weight-b2.weight)
+        .forEach(e => colLeft.appendChild(buildEntryCard(e)));
+      yearEntries.filter(e => e.weight > 0).sort((a,b2)=>b2.weight-a.weight)
+        .forEach(e => colRight.appendChild(buildEntryCard(e)));
+
+      const marker = document.createElement('div');
+      marker.className = 'year-marker' + ((yearEntries.length || coveredAges.has(age)) ? ' has-entries' : '');
+      marker.title = 'Eintrag für Alter ' + age + ' hinzufügen';
+      marker.innerHTML = '<div class="age">' + age + '</div><div class="cal">' + (birthYear + age) + '</div>';
+      marker.addEventListener('click', () => openEntryModal('add', { year: age, yearEnd: age }));
+      colCenter.appendChild(marker);
+
+      row.appendChild(colLeft);
+      row.appendChild(laneLeft);
+      row.appendChild(colCenter);
+      row.appendChild(laneRight);
+      row.appendChild(colRight);
+      timelineEl.appendChild(row);
+
+      laneLeftEls[age] = laneLeft;
+      laneRightEls[age] = laneRight;
+    }
+
+    function placeBars(list, tracks, laneEls, side){
+      list.forEach(e => {
+        const startLane = laneEls[e.year];
+        const endLane = laneEls[e.yearEnd];
+        if (!startLane || !endLane) return;
+        const top = startLane.offsetTop;
+        const height = (endLane.offsetTop + endLane.offsetHeight) - top;
+        const track = tracks.trackOf[e.id] || 0;
+        const left = startLane.offsetLeft + 4 + track * (BAR_WIDTH + BAR_GAP);
+
+        const bar = document.createElement('div');
+        bar.className = 'span-bar ' + (side === 'left' ? 'span-bar-left' : 'span-bar-right');
+        bar.style.top = top + 'px';
+        bar.style.height = Math.max(height, BAR_WIDTH) + 'px';
+        bar.style.left = left + 'px';
+        bar.style.width = BAR_WIDTH + 'px';
+        bar.style.background = weightColor(e.weight);
+        bar.style.color = weightTextColor(e.weight);
+        bar.addEventListener('click', () => openEntryModal('edit', e));
+
+        const label = document.createElement('div');
+        label.className = 'span-bar-label';
+        label.textContent = e.title;
+        bar.appendChild(label);
+
+        const popover = document.createElement('div');
+        popover.className = 'span-bar-popover';
+        popover.style.background = weightColor(e.weight);
+        popover.style.color = weightTextColor(e.weight);
+
+        const pTitle = document.createElement('p');
+        pTitle.className = 'popover-title';
+        pTitle.textContent = e.title;
+        popover.appendChild(pTitle);
+
+        if (e.text){
+          const pText = document.createElement('p');
+          pText.className = 'popover-text';
+          pText.textContent = e.text;
+          popover.appendChild(pText);
         }
 
+        const pRange = document.createElement('p');
+        pRange.className = 'popover-range';
+        pRange.textContent = 'Alter ' + e.year + '–' + e.yearEnd;
+        popover.appendChild(pRange);
 
-        /* ==========================================
-           STORAGE
-           ========================================== */
+        bar.appendChild(popover);
+        timelineEl.appendChild(bar);
+      });
+    }
+    placeBars(multiLeft, tracksLeft, laneLeftEls, 'left');
+    placeBars(multiRight, tracksRight, laneRightEls, 'right');
+  }
 
-        function loadEvents() {
+  function buildEntryCard(entry){
+    const card = document.createElement('div');
+    card.className = 'entry-card';
+    card.title = 'Klicken zum Bearbeiten';
+    card.style.background = weightColor(entry.weight);
+    card.style.color = weightTextColor(entry.weight);
 
-            try {
+    const title = document.createElement('p');
+    title.className = 'entry-title';
+    title.textContent = entry.title;
 
-                const stored =
-                    localStorage.getItem(
-                        STORAGE_KEY
-                    );
+    const text = document.createElement('p');
+    text.className = 'entry-text';
+    text.textContent = entry.text || '';
 
-                if (!stored) {
-                    return [];
-                }
+    const delBtn = document.createElement('button');
+    delBtn.className = 'entry-delete';
+    delBtn.title = 'Eintrag löschen';
+    delBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
+    delBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      openConfirmDelete(entry.id);
+    });
 
-                const data =
-                    JSON.parse(stored);
+    card.appendChild(delBtn);
+    card.appendChild(title);
+    card.appendChild(text);
 
-                /*
-                    Alte Daten aus vorherigen
-                    Versionen möglichst übernehmen.
-                */
+    card.addEventListener('click', () => openEntryModal('edit', entry));
+    return card;
+  }
 
-                return data.map(event => {
+  // ---------- Entry Modal ----------
 
-                    if (
-                        typeof event.intensity !==
-                        "number"
-                    ) {
+  const entryModalOverlay = $('#entryModalOverlay');
+  const entryModalTitle = $('#entryModalTitle');
+  const entryYearSelect = $('#entryYear');
+  const entryYearEndSelect = $('#entryYearEnd');
+  const entryTitleInput = $('#entryTitle');
+  const entryTextInput = $('#entryText');
+  const sideToggle = $('#sideToggle');
+  const intensityRow = $('#intensityRow');
+  const deleteFromFormBtn = $('#deleteFromFormBtn');
 
-                        if (
-                            event.type ===
-                            "positive"
-                        ) {
+  function buildIntensityButtons(){
+    intensityRow.innerHTML = '';
+    for (let i = 1; i <= 5; i++){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = i;
+      btn.dataset.intensity = i;
+      btn.addEventListener('click', () => {
+        formState.intensity = i;
+        refreshIntensityStyles();
+      });
+      intensityRow.appendChild(btn);
+    }
+  }
+  buildIntensityButtons();
 
-                            event.intensity = 3;
+  function refreshIntensityStyles(){
+    Array.from(intensityRow.children).forEach(btn => {
+      const i = parseInt(btn.dataset.intensity, 10);
+      const signedWeight = formState.side === 'neg' ? -i : i;
+      btn.style.background = weightColor(signedWeight);
+      btn.style.color = weightTextColor(signedWeight);
+      btn.classList.toggle('selected', i === formState.intensity);
+    });
+  }
 
-                        } else if (
-                            event.type ===
-                            "negative"
-                        ) {
+  sideToggle.addEventListener('click', (ev) => {
+    const btn = ev.target.closest('button[data-side]');
+    if (!btn) return;
+    formState.side = btn.dataset.side;
+    Array.from(sideToggle.children).forEach(b => b.classList.toggle('active', b === btn));
+    refreshIntensityStyles();
+  });
 
-                            event.intensity = -3;
+  function populateYearSelect(selectEl, selectedAge){
+    const maxAge = completedYears(birthdate);
+    const birthYear = new Date(birthdate + 'T00:00:00').getFullYear();
+    selectEl.innerHTML = '';
+    for (let age = 0; age <= maxAge; age++){
+      const opt = document.createElement('option');
+      opt.value = age;
+      opt.textContent = age + ' Jahre (' + (birthYear + age) + ')';
+      if (age === selectedAge) opt.selected = true;
+      selectEl.appendChild(opt);
+    }
+  }
 
-                        } else {
+  function openEntryModal(mode, data){
+    formState.mode = mode;
+    formState.id = data.id || null;
+    formState.year = data.year;
+    formState.side = (data.weight || 1) < 0 ? 'neg' : 'pos';
+    formState.intensity = Math.abs(data.weight || 3) || 3;
 
-                            event.intensity = 0;
-                        }
-                    }
+    entryModalTitle.textContent = mode === 'add' ? 'Eintrag hinzufügen' : 'Eintrag bearbeiten';
+    populateYearSelect(entryYearSelect, data.year);
+    populateYearSelect(entryYearEndSelect, data.yearEnd != null ? data.yearEnd : data.year);
+    entryTitleInput.value = data.title || '';
+    entryTextInput.value = data.text || '';
 
-                    return event;
-                });
+    Array.from(sideToggle.children).forEach(b => b.classList.toggle('active', b.dataset.side === formState.side));
+    refreshIntensityStyles();
 
-            } catch (error) {
+    deleteFromFormBtn.style.display = mode === 'edit' ? 'flex' : 'none';
 
-                console.error(
-                    "Konnte Daten nicht laden:",
-                    error
-                );
+    entryModalOverlay.classList.remove('hidden');
+    entryTitleInput.focus();
+  }
 
-                return [];
-            }
+  function closeEntryModal(){
+    entryModalOverlay.classList.add('hidden');
+  }
+
+  $('#cancelEntryBtn').addEventListener('click', closeEntryModal);
+  entryModalOverlay.addEventListener('click', (ev) => {
+    if (ev.target === entryModalOverlay) closeEntryModal();
+  });
+
+  $('#saveEntryBtn').addEventListener('click', () => {
+    const title = entryTitleInput.value.trim();
+    if (!title){
+      entryTitleInput.focus();
+      entryTitleInput.style.borderColor = '#B3261E';
+      return;
+    }
+    let year = parseInt(entryYearSelect.value, 10);
+    let yearEnd = parseInt(entryYearEndSelect.value, 10);
+    if (yearEnd < year){ const tmp = year; year = yearEnd; yearEnd = tmp; }
+    const weight = formState.side === 'neg' ? -formState.intensity : formState.intensity;
+    const text = entryTextInput.value.trim();
+
+    if (formState.mode === 'add'){
+      entries.push({ id: uid(), year, yearEnd, weight, title, text });
+    } else {
+      const entry = entries.find(e => e.id === formState.id);
+      if (entry){
+        entry.year = year;
+        entry.yearEnd = yearEnd;
+        entry.weight = weight;
+        entry.title = title;
+        entry.text = text;
+      }
+    }
+    saveEntries();
+    closeEntryModal();
+    render();
+  });
+
+  deleteFromFormBtn.addEventListener('click', () => {
+    openConfirmDelete(formState.id, closeEntryModal);
+  });
+
+  // ---------- Add button (header) ----------
+
+  $('#addBtn').addEventListener('click', () => {
+    if (!birthdate){
+      birthdateInput.focus();
+      return;
+    }
+    const maxAge = completedYears(birthdate);
+    openEntryModal('add', { year: maxAge, yearEnd: maxAge });
+  });
+
+  // ---------- Confirm Delete Modal ----------
+
+  const confirmModalOverlay = $('#confirmModalOverlay');
+  const confirmTitleEl = $('#confirmTitle');
+  const confirmTextEl = $('#confirmText');
+  let pendingDeleteId = null;
+  let pendingDeleteAfter = null;
+  let pendingAction = 'single';
+
+  function openConfirmDelete(id, afterCloseCb){
+    pendingAction = 'single';
+    pendingDeleteId = id;
+    pendingDeleteAfter = afterCloseCb || null;
+    confirmTitleEl.textContent = 'Eintrag wirklich löschen?';
+    confirmTextEl.textContent = 'Dieser Schritt lässt sich nicht rückgängig machen.';
+    confirmModalOverlay.classList.remove('hidden');
+  }
+  function openConfirmDeleteAll(){
+    pendingAction = 'all';
+    pendingDeleteId = null;
+    pendingDeleteAfter = null;
+    confirmTitleEl.textContent = 'Wirklich alle Einträge löschen?';
+    confirmTextEl.textContent = 'Alle ' + entries.length + ' Einträge werden entfernt. Dieser Schritt lässt sich nicht rückgängig machen.';
+    confirmModalOverlay.classList.remove('hidden');
+  }
+  function closeConfirmDelete(){
+    confirmModalOverlay.classList.add('hidden');
+    pendingDeleteId = null;
+    pendingDeleteAfter = null;
+    pendingAction = 'single';
+  }
+
+  $('#confirmCancelBtn').addEventListener('click', closeConfirmDelete);
+  confirmModalOverlay.addEventListener('click', (ev) => {
+    if (ev.target === confirmModalOverlay) closeConfirmDelete();
+  });
+  $('#confirmOkBtn').addEventListener('click', () => {
+    if (pendingAction === 'all'){
+      entries = [];
+    } else {
+      entries = entries.filter(e => e.id !== pendingDeleteId);
+    }
+    saveEntries();
+    const cb = pendingDeleteAfter;
+    closeConfirmDelete();
+    if (cb) cb();
+    render();
+  });
+
+  // ---------- Alles löschen ----------
+
+  $('#clearAllBtn').addEventListener('click', () => {
+    if (!entries.length) return;
+    openConfirmDeleteAll();
+  });
+
+  // ---------- Drucken ----------
+
+  $('#printBtn').addEventListener('click', () => {
+    window.print();
+  });
+
+  // ---------- Birthdate ----------
+
+  birthdateInput.addEventListener('change', () => {
+    birthdate = birthdateInput.value;
+    saveBirthdate();
+    render();
+  });
+
+  // ---------- Import / Export ----------
+
+  $('#exportBtn').addEventListener('click', () => {
+    const payload = { birthdate, entries };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'lebenslinie-export.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  const importBtn = $('#importBtn');
+  const importFile = $('#importFile');
+  importBtn.addEventListener('click', () => importFile.click());
+  importFile.addEventListener('change', () => {
+    const file = importFile.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!data || !Array.isArray(data.entries)){
+          alert('Diese Datei enthält keine gültigen Lebenslinie-Daten.');
+          return;
         }
-
-
-        function saveEvents() {
-
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(events)
-            );
-        }
-
-
-        /* ==========================================
-           INTENSITÄT
-           ========================================== */
-
-        function getEventClass(intensity) {
-
-            if (intensity > 0) {
-                return "positive";
-            }
-
-            if (intensity < 0) {
-                return "negative";
-            }
-
-            return "neutral";
-        }
-
-
-        function formatIntensity(value) {
-
-            if (value > 0) {
-                return "+" + value;
-            }
-
-            return String(value);
-        }
-
-
-        /* ==========================================
-           RENDERING
-           ========================================== */
-
-        function render() {
-
-            const timeline =
-                document.getElementById(
-                    "timeline"
-                );
-
-            timeline.innerHTML = "";
-
-            const currentAge =
-                getCurrentAge();
-
-
-            for (
-                let age = 0;
-                age <= currentAge;
-                age++
-            ) {
-
-                const row =
-                    document.createElement(
-                        "div"
-                    );
-
-                row.className =
-                    "timeline-row";
-
-                row.dataset.age =
-                    age;
-
-
-                /* =========================
-                   ALTERSKREIS
-                   ========================= */
-
-                const ageElement =
-                    document.createElement(
-                        "div"
-                    );
-
-                ageElement.className =
-                    "age";
-
-                if (age === 0) {
-
-                    ageElement.classList.add(
-                        "birth"
-                    );
-                }
-
-                if (
-                    age === currentAge
-                ) {
-
-                    ageElement.classList.add(
-                        "today"
-                    );
-                }
-
-                ageElement.textContent =
-                    age;
-
-                row.appendChild(
-                    ageElement
-                );
-
-
-                /* =========================
-                   EREIGNIS-BEREICHE
-                   ========================= */
-
-                const left =
-                    document.createElement(
-                        "div"
-                    );
-
-                left.className =
-                    "events-left";
-
-
-                const right =
-                    document.createElement(
-                        "div"
-                    );
-
-                right.className =
-                    "events-right";
-
-
-                const ageEvents =
-                    events.filter(
-                        event =>
-                            Number(event.age) ===
-                            age
-                    );
-
-
-                /* =========================
-                   EREIGNISSE EINORDNEN
-                   ========================= */
-
-                ageEvents.forEach(
-                    event => {
-
-                        const element =
-                            createEventElement(
-                                event
-                            );
-
-                        if (
-                            Number(event.intensity) >
-                            0
-                        ) {
-
-                            right.appendChild(
-                                element
-                            );
-
-                        } else {
-
-                            left.appendChild(
-                                element
-                            );
-                        }
-                    }
-                );
-
-
-                row.appendChild(left);
-                row.appendChild(right);
-
-
-                /* =========================
-                   DRAG & DROP
-                   ========================= */
-
-                row.addEventListener(
-                    "dragover",
-                    handleDragOver
-                );
-
-                row.addEventListener(
-                    "dragleave",
-                    handleDragLeave
-                );
-
-                row.addEventListener(
-                    "drop",
-                    event =>
-                        handleDrop(
-                            event,
-                            age
-                        )
-                );
-
-
-                timeline.appendChild(
-                    row
-                );
-            }
-        }
-
-
-        /* ==========================================
-           EVENT-KARTE
-           ========================================== */
-
-        function createEventElement(event) {
-
-            const intensity =
-                Number(event.intensity) || 0;
-
-            const type =
-                getEventClass(
-                    intensity
-                );
-
-            const intensityAbs =
-                Math.abs(intensity);
-
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            /*
-                Wichtig:
-                Die Intensität wird hier als
-                CSS-Variable an die Karte übergeben.
- 
-                Dadurch können sowohl Farbe,
-                Rahmen als auch Position darauf
-                reagieren.
-            */
-
-            card.className =
-                `event ${type}`;
-
-
-            card.classList.add(
-                `intensity-${intensityAbs}`
-            );
-
-
-            card.style.setProperty(
-                "--intensity-abs",
-                intensityAbs
-            );
-
-
-            card.draggable =
-                true;
-
-
-            card.dataset.id =
-                event.id;
-
-
-            /* =========================
-               HTML DER KARTE
-               ========================= */
-
-            card.innerHTML = `
-    
-                    <div class="event-header">
-    
-                        <div class="event-title">
-                            ${escapeHtml(
-                event.title
-            )}
-                        </div>
-    
-                        <div class="intensity ${type}">
-                            ${formatIntensity(
-                intensity
-            )}
-                        </div>
-    
-                    </div>
-    
-                    ${event.note
-                    ? `
-                                <div class="event-note">
-                                    ${escapeHtml(
-                        event.note
-                    )}
-                                </div>
-                            `
-                    : ""
-                }
-    
-                    <div class="event-actions">
-    
-                        <button
-                            type="button"
-                            class="edit-button"
-                            onclick="editEvent('${event.id}')"
-                            title="Ereignis bearbeiten"
-                            aria-label="Ereignis bearbeiten">
-                            ✏️
-                        </button>
-
-                        <button
-                            type="button"
-                            class="delete-button"
-                            onclick="deleteEvent('${event.id}')"
-                            title="Ereignis löschen"
-                            aria-label="Ereignis löschen">
-                            🗑️
-                        </button>
-
-
-                    </div>
-                `;
-
-
-            /* =========================
-               DRAG START
-               ========================= */
-
-            card.addEventListener(
-                "dragstart",
-                () => {
-
-                    draggedEventId =
-                        event.id;
-
-                    card.style.opacity =
-                        "0.4";
-                }
-            );
-
-
-            /* =========================
-               DRAG END
-               ========================= */
-
-            card.addEventListener(
-                "dragend",
-                () => {
-
-                    draggedEventId =
-                        null;
-
-                    card.style.opacity =
-                        "1";
-
-                    document
-                        .querySelectorAll(
-                            ".drop-target"
-                        )
-                        .forEach(
-                            el =>
-                                el.classList.remove(
-                                    "drop-target"
-                                )
-                        );
-                }
-            );
-
-
-            return card;
-        }
-
-
-        /* ==========================================
-           DRAG & DROP
-           ========================================== */
-
-        function handleDragOver(event) {
-
-            event.preventDefault();
-
-            event.currentTarget
-                .classList.add(
-                    "drop-target"
-                );
-        }
-
-
-        function handleDragLeave(event) {
-
-            event.currentTarget
-                .classList.remove(
-                    "drop-target"
-                );
-        }
-
-
-        function handleDrop(
-            event,
-            newAge
-        ) {
-
-            event.preventDefault();
-
-            const row =
-                event.currentTarget;
-
-            row.classList.remove(
-                "drop-target"
-            );
-
-
-            if (!draggedEventId) {
-                return;
-            }
-
-
-            const item =
-                events.find(
-                    e =>
-                        e.id ===
-                        draggedEventId
-                );
-
-
-            if (!item) {
-                return;
-            }
-
-
-            item.age =
-                newAge;
-
-
-            saveEvents();
-
-            render();
-        }
-
-
-        /* ==========================================
-           MODAL ÖFFNEN
-           ========================================== */
-
-        function openAddModal() {
-
-            document.getElementById(
-                "modalTitle"
-            ).textContent =
-                "Neues Ereignis";
-
-
-            document.getElementById(
-                "eventId"
-            ).value =
-                "";
-
-
-            document.getElementById(
-                "eventAge"
-            ).value =
-                getCurrentAge();
-
-
-            document.getElementById(
-                "eventIntensity"
-            ).value =
-                0;
-
-
-            document.getElementById(
-                "eventTitle"
-            ).value =
-                "";
-
-
-            document.getElementById(
-                "eventNote"
-            ).value =
-                "";
-
-
-            updateIntensityPreview();
-
-
-            document
-                .getElementById(
-                    "eventDialog"
-                )
-                .showModal();
-        }
-
-
-        function closeModal() {
-
-            document
-                .getElementById(
-                    "eventDialog"
-                )
-                .close();
-        }
-
-
-        /* ==========================================
-           BEARBEITEN
-           ========================================== */
-
-        function editEvent(id) {
-
-            const event =
-                events.find(
-                    e =>
-                        e.id === id
-                );
-
-
-            if (!event) {
-                return;
-            }
-
-
-            document.getElementById(
-                "modalTitle"
-            ).textContent =
-                "Ereignis bearbeiten";
-
-
-            document.getElementById(
-                "eventId"
-            ).value =
-                event.id;
-
-
-            document.getElementById(
-                "eventAge"
-            ).value =
-                event.age;
-
-
-            document.getElementById(
-                "eventIntensity"
-            ).value =
-                event.intensity;
-
-
-            document.getElementById(
-                "eventTitle"
-            ).value =
-                event.title;
-
-
-            document.getElementById(
-                "eventNote"
-            ).value =
-                event.note || "";
-
-
-            updateIntensityPreview();
-
-
-            document
-                .getElementById(
-                    "eventDialog"
-                )
-                .showModal();
-        }
-
-
-        /* ==========================================
-           SLIDER-VORSCHAU
-           ========================================== */
-
-        function updateIntensityPreview() {
-
-            const slider =
-                document.getElementById(
-                    "eventIntensity"
-                );
-
-            const output =
-                document.getElementById(
-                    "intensityValue"
-                );
-
-
-            const value =
-                Number(
-                    slider.value
-                );
-
-
-            output.textContent =
-                formatIntensity(
-                    value
-                );
-
-
-            /*
-                Vorschau ebenfalls abhängig
-                von der Intensität einfärben.
-            */
-
-            if (value > 0) {
-
-                const saturation =
-                    35 +
-                    Math.abs(value) * 10;
-
-                output.style.background =
-                    `hsl(
-                            145,
-                            ${saturation}%,
-                            45%
-                        )`;
-
-            } else if (value < 0) {
-
-                const saturation =
-                    35 +
-                    Math.abs(value) * 10;
-
-                output.style.background =
-                    `hsl(
-                            0,
-                            ${saturation}%,
-                            45%
-                        )`;
-
-            } else {
-
-                output.style.background =
-                    "var(--neutral)";
-            }
-        }
-
-
-        /* ==========================================
-           SPEICHERN
-           ========================================== */
-
-        function saveEvent(event) {
-
-            event.preventDefault();
-
-
-            const id =
-                document.getElementById(
-                    "eventId"
-                ).value;
-
-
-            const age =
-                Number(
-                    document.getElementById(
-                        "eventAge"
-                    ).value
-                );
-
-
-            const intensity =
-                Number(
-                    document.getElementById(
-                        "eventIntensity"
-                    ).value
-                );
-
-
-            const title =
-                document.getElementById(
-                    "eventTitle"
-                ).value.trim();
-
-
-            const note =
-                document.getElementById(
-                    "eventNote"
-                ).value.trim();
-
-
-            if (!title) {
-                return;
-            }
-
-
-            /* =========================
-               BESTEHENDES EREIGNIS
-               ========================= */
-
-            if (id) {
-
-                const existing =
-                    events.find(
-                        e =>
-                            e.id === id
-                    );
-
-
-                if (existing) {
-
-                    existing.age =
-                        age;
-
-                    existing.intensity =
-                        intensity;
-
-                    existing.title =
-                        title;
-
-                    existing.note =
-                        note;
-                }
-
-
-                /* =========================
-                   NEUES EREIGNIS
-                   ========================= */
-
-            } else {
-
-                events.push({
-
-                    id:
-                        crypto.randomUUID(),
-
-                    age,
-
-                    intensity,
-
-                    title,
-
-                    note
-                });
-            }
-
-
-            saveEvents();
-
-            closeModal();
-
-            render();
-        }
-
-
-        /* ==========================================
-           LÖSCHEN
-           ========================================== */
-
-        function deleteEvent(id) {
-
-            const event =
-                events.find(
-                    e =>
-                        e.id === id
-                );
-
-
-            if (!event) {
-                return;
-            }
-
-
-            const confirmed =
-                confirm(
-                    `„${event.title}“ wirklich löschen?`
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            events =
-                events.filter(
-                    e =>
-                        e.id !== id
-                );
-
-
-            saveEvents();
-
-            render();
-        }
-
-
-        function clearAll() {
-
-            if (!events.length) {
-                return;
-            }
-
-
-            const confirmed =
-                confirm(
-                    "Wirklich ALLE Ereignisse löschen?"
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            events = [];
-
-            saveEvents();
-
-            render();
-        }
-
-
-        /* ==========================================
-           HTML-SICHERHEIT
-           ========================================== */
-
-        function escapeHtml(text) {
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-            div.textContent =
-                text;
-
-            return div.innerHTML;
-        }
-
-
-        /* ==========================================
-           EXPORT
-           ========================================== */
-
-        function exportData() {
-
-            const exportObject = {
-
-                version: 2,
-
-                birthDate:
-                    BIRTH_DATE,
-
-                exportedAt:
-                    new Date().toISOString(),
-
-                events:
-                    events
-            };
-
-
-            const json =
-                JSON.stringify(
-                    exportObject,
-                    null,
-                    2
-                );
-
-
-            const blob =
-                new Blob(
-                    [json],
-                    {
-                        type:
-                            "application/json"
-                    }
-                );
-
-
-            const url =
-                URL.createObjectURL(
-                    blob
-                );
-
-
-            const link =
-                document.createElement(
-                    "a"
-                );
-
-
-            link.href =
-                url;
-
-
-            link.download =
-                "meine-lebenslinie.json";
-
-
-            document.body.appendChild(
-                link
-            );
-
-
-            link.click();
-
-
-            link.remove();
-
-
-            URL.revokeObjectURL(
-                url
-            );
-        }
-
-
-        /* ==========================================
-           IMPORT
-           ========================================== */
-
-        function importData(event) {
-
-            const file =
-                event.target.files[0];
-
-
-            if (!file) {
-                return;
-            }
-
-
-            const reader =
-                new FileReader();
-
-
-            reader.onload =
-                function (e) {
-
-                    try {
-
-                        const imported =
-                            JSON.parse(
-                                e.target.result
-                            );
-
-
-                        if (
-                            !imported ||
-                            !Array.isArray(
-                                imported.events
-                            )
-                        ) {
-
-                            throw new Error(
-                                "Ungültiges Dateiformat"
-                            );
-                        }
-
-
-                        const confirmed =
-                            confirm(
-                                "Beim Import werden deine aktuell gespeicherten Ereignisse ersetzt. Fortfahren?"
-                            );
-
-
-                        if (!confirmed) {
-                            return;
-                        }
-
-
-                        /*
-                            Importierte Daten übernehmen
-                        */
-
-                        events =
-                            imported.events.map(
-                                event => {
-
-                                    /*
-                                        Sicherheitshalber
-                                        Intensität als Zahl
-                                        behandeln.
-                                    */
-
-                                    event.intensity =
-                                        Number(
-                                            event.intensity
-                                        ) || 0;
-
-                                    event.age =
-                                        Number(
-                                            event.age
-                                        ) || 0;
-
-                                    return event;
-                                }
-                            );
-
-
-                        saveEvents();
-
-                        render();
-
-
-                        alert(
-                            "Die Lebenslinie wurde erfolgreich importiert."
-                        );
-
-
-                    } catch (error) {
-
-                        console.error(
-                            error
-                        );
-
-
-                        alert(
-                            "Die Datei konnte nicht importiert werden."
-                        );
-                    }
-
-                };
-
-
-            reader.readAsText(
-                file
-            );
-
-
-            /*
-                Damit dieselbe Datei direkt
-                noch einmal ausgewählt werden kann.
-            */
-
-            event.target.value =
-                "";
-        }
-
-
-        /* ==========================================
-           START
-           ========================================== */
-
+        const ok = confirm('Import ersetzt alle aktuell gespeicherten Daten. Fortfahren?');
+        if (!ok) return;
+        birthdate = data.birthdate || '';
+        entries = data.entries.map(e => ({
+          id: e.id || uid(),
+          year: e.year,
+          yearEnd: (e.yearEnd != null ? e.yearEnd : e.year),
+          weight: e.weight,
+          title: e.title || '',
+          text: e.text || ''
+        }));
+        birthdateInput.value = birthdate;
+        saveBirthdate();
+        saveEntries();
         render();
+      } catch(err){
+        alert('Die Datei konnte nicht gelesen werden: ' + err.message);
+      } finally {
+        importFile.value = '';
+      }
+    };
+    reader.readAsText(file);
+  });
 
-    </script>
+  // ---------- Init ----------
+  render();
 
+})();
+</script>
 </body>
-
 </html>
